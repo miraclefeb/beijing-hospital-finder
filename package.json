@@ -1,0 +1,11 @@
+{
+  "name": "beijing-hospital-finder",
+  "version": "1.0.0",
+  "description": "北京医院智能推荐 - 输入症状，AI推荐最合适的医院和科室",
+  "scripts": {
+    "build": "echo 'No build needed'"
+  },
+  "keywords": ["hospital", "beijing", "healthcare"],
+  "author": "",
+  "license": "MIT"
+}
