@@ -6,9 +6,23 @@ const aiResultText = document.getElementById('aiResultText');
 const recommendedDept = document.getElementById('recommendedDept');
 const listTitle = document.getElementById('listTitle');
 
+// 初始化 CloudBase
+const app = tcb.init({
+  env: 'hospital-search-7gnfne58d97018a9-1404181085' // 替换为你的环境 ID
+});
+
 // 渲染医院列表
 function renderHospitals(list) {
     container.innerHTML = '';
+    
+    if (list.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-12">
+                <p class="text-slate-400 text-sm">暂无相关医院</p>
+            </div>
+        `;
+        return;
+    }
     
     list.forEach((h, index) => {
         const card = document.createElement('div');
@@ -64,8 +78,8 @@ function renderHospitals(list) {
     lucide.createIcons();
 }
 
-// 处理搜索
-function handleSearch() {
+// 处理搜索 - 调用云函数
+async function handleSearch() {
     const val = searchInput.value.trim();
     
     if (!val) {
@@ -81,43 +95,84 @@ function handleSearch() {
     aiResultText.innerText = "AI 正在分析您的症状...";
     recommendedDept.innerText = "...";
     
-    // 模拟 AI 分析延迟
-    setTimeout(() => {
+    try {
+        // 调用云函数
+        const result = await app.callFunction({
+            name: 'aiTriage',
+            data: {
+                symptom: val
+            }
+        });
+        
         aiBox.classList.remove('loading-pulse');
         
-        // 查找匹配的症状
-        let foundKey = Object.keys(aiKnowledge).find(k => val.includes(k));
-        
-        if (foundKey) {
-            const info = aiKnowledge[foundKey];
-            aiResultText.innerText = info.analysis;
-            recommendedDept.innerText = info.dept;
-            listTitle.innerText = `针对"${info.dept}"的优势医院`;
+        if (result.result.code === 0) {
+            const { department, analysis } = result.result.data;
+            
+            aiResultText.innerText = analysis;
+            recommendedDept.innerText = department;
+            listTitle.innerText = `针对"${department}"的优势医院`;
             
             // 筛选相关医院
             const filtered = hospitals.filter(h => 
-                h.topDepts.some(d => d.name.includes(info.dept)) || 
+                h.topDepts.some(d => d.name.includes(department)) || 
                 h.keywords.some(k => val.includes(k))
             ).sort((a, b) => {
-                const rA = a.topDepts.find(d => d.name.includes(info.dept))?.rank || 99;
-                const rB = b.topDepts.find(d => d.name.includes(info.dept))?.rank || 99;
+                const rA = h.topDepts.find(d => d.name.includes(department))?.rank || 99;
+                const rB = h.topDepts.find(d => d.name.includes(department))?.rank || 99;
                 return rA - rB;
             });
             
-            renderHospitals(filtered);
-        } else {
-            // 未找到精确匹配，尝试关键词匹配
-            aiResultText.innerText = "AI 暂时无法精确识别该症状。建议您输入更具体的描述，或前往综合内科预检。";
-            recommendedDept.innerText = "综合内科";
-            
-            const filtered = hospitals.filter(h => 
-                h.keywords.some(k => val.includes(k)) || 
-                h.name.includes(val)
-            );
-            
             renderHospitals(filtered.length > 0 ? filtered : hospitals);
+        } else {
+            // AI 分析失败，降级到关键词匹配
+            console.error('AI 分析失败:', result.result.message);
+            fallbackSearch(val);
         }
-    }, 600);
+        
+    } catch (error) {
+        console.error('调用云函数失败:', error);
+        aiBox.classList.remove('loading-pulse');
+        
+        // 降级到关键词匹配
+        fallbackSearch(val);
+    }
+}
+
+// 降级方案：关键词匹配
+function fallbackSearch(val) {
+    // 查找匹配的症状
+    let foundKey = Object.keys(aiKnowledge).find(k => val.includes(k));
+    
+    if (foundKey) {
+        const info = aiKnowledge[foundKey];
+        aiResultText.innerText = info.analysis;
+        recommendedDept.innerText = info.dept;
+        listTitle.innerText = `针对"${info.dept}"的优势医院`;
+        
+        // 筛选相关医院
+        const filtered = hospitals.filter(h => 
+            h.topDepts.some(d => d.name.includes(info.dept)) || 
+            h.keywords.some(k => val.includes(k))
+        ).sort((a, b) => {
+            const rA = a.topDepts.find(d => d.name.includes(info.dept))?.rank || 99;
+            const rB = b.topDepts.find(d => d.name.includes(info.dept))?.rank || 99;
+            return rA - rB;
+        });
+        
+        renderHospitals(filtered);
+    } else {
+        // 未找到精确匹配
+        aiResultText.innerText = "AI 暂时无法精确识别该症状。建议您输入更具体的描述，或前往综合内科预检。";
+        recommendedDept.innerText = "综合内科";
+        
+        const filtered = hospitals.filter(h => 
+            h.keywords.some(k => val.includes(k)) || 
+            h.name.includes(val)
+        );
+        
+        renderHospitals(filtered.length > 0 ? filtered : hospitals);
+    }
 }
 
 // 快速搜索
