@@ -6,7 +6,7 @@ const aiResultText = document.getElementById('aiResultText');
 const recommendedDept = document.getElementById('recommendedDept');
 const listTitle = document.getElementById('listTitle');
 
-// 云函数 HTTP 访问地址（需要替换）
+// 云函数 HTTP 访问地址
 const CLOUD_FUNCTION_URL = 'https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage';
 
 // 渲染医院列表
