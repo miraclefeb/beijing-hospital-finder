@@ -7,7 +7,7 @@ const recommendedDept = document.getElementById('recommendedDept');
 const listTitle = document.getElementById('listTitle');
 
 // 初始化 CloudBase
-const app = cloudbase.init({
+const app = tcb.init({
   env: 'hospital-search-7gnfne58d97018a9-1404181085'
 });
 
