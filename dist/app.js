@@ -6,8 +6,10 @@ const aiResultText = document.getElementById('aiResultText');
 const recommendedDept = document.getElementById('recommendedDept');
 const listTitle = document.getElementById('listTitle');
 
-// 云函数 HTTP 访问地址
-const CLOUD_FUNCTION_URL = 'https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1';
+// 初始化 CloudBase
+const app = cloudbase.init({
+  env: 'hospital-search-7gnfne58d97018a9-1404181085'
+});
 
 // 渲染医院列表
 function renderHospitals(list) {
@@ -94,23 +96,21 @@ async function handleSearch() {
     recommendedDept.innerText = "...";
     
     try {
-        // 直接 HTTP 调用云函数
-        const response = await fetch(CLOUD_FUNCTION_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        // 调用云函数
+        console.log('开始调用云函数，症状:', val);
+        const result = await app.callFunction({
+            name: 'aiTriage',
+            data: {
                 symptom: val
-            })
+            }
         });
         
-        const result = await response.json();
+        console.log('云函数返回:', result);
         
         aiBox.classList.remove('loading-pulse');
         
-        if (result.code === 0) {
-            const { department, analysis } = result.data;
+        if (result.result && result.result.code === 0) {
+            const { department, analysis } = result.result.data;
             
             aiResultText.innerText = analysis;
             recommendedDept.innerText = department;
@@ -129,7 +129,7 @@ async function handleSearch() {
             renderHospitals(filtered.length > 0 ? filtered : hospitals);
         } else {
             // AI 分析失败，降级到关键词匹配
-            console.error('AI 分析失败:', result.message);
+            console.error('AI 分析失败:', result);
             fallbackSearch(val);
         }
         
