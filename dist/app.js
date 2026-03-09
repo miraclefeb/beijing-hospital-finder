@@ -7,8 +7,8 @@ const recommendedDept = document.getElementById('recommendedDept');
 const listTitle = document.getElementById('listTitle');
 
 // 初始化 CloudBase
-const app = tcb.init({
-  env: 'hospital-search-7gnfne58d97018a9-1404181085' // 替换为你的环境 ID
+const app = cloudbase.init({
+  env: 'hospital-search-7gnfne58d97018a9-1404181085'
 });
 
 // 渲染医院列表
