@@ -6,10 +6,8 @@ const aiResultText = document.getElementById('aiResultText');
 const recommendedDept = document.getElementById('recommendedDept');
 const listTitle = document.getElementById('listTitle');
 
-// 初始化 CloudBase
-const app = tcb.init({
-  env: 'hospital-search-7gnfne58d97018a9-1404181085'
-});
+// 云函数 HTTP 访问地址（需要替换）
+const CLOUD_FUNCTION_URL = 'https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage';
 
 // 渲染医院列表
 function renderHospitals(list) {
@@ -96,18 +94,23 @@ async function handleSearch() {
     recommendedDept.innerText = "...";
     
     try {
-        // 调用云函数
-        const result = await app.callFunction({
-            name: 'aiTriage',
-            data: {
+        // 直接 HTTP 调用云函数
+        const response = await fetch(CLOUD_FUNCTION_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 symptom: val
-            }
+            })
         });
+        
+        const result = await response.json();
         
         aiBox.classList.remove('loading-pulse');
         
-        if (result.result.code === 0) {
-            const { department, analysis } = result.result.data;
+        if (result.code === 0) {
+            const { department, analysis } = result.data;
             
             aiResultText.innerText = analysis;
             recommendedDept.innerText = department;
@@ -126,7 +129,7 @@ async function handleSearch() {
             renderHospitals(filtered.length > 0 ? filtered : hospitals);
         } else {
             // AI 分析失败，降级到关键词匹配
-            console.error('AI 分析失败:', result.result.message);
+            console.error('AI 分析失败:', result.message);
             fallbackSearch(val);
         }
         
