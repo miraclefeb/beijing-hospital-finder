@@ -4,6 +4,37 @@ const searchInput = document.getElementById('searchInput');
 const aiBox = document.getElementById('aiAnalysis');
 const aiResultText = document.getElementById('aiResultText');
 const listTitle = document.getElementById('listTitle');
+const listSubtitle = document.getElementById('listSubtitle');
+
+// 生成医院标签
+function generateHospitalTags(hospital) {
+    const tags = [];
+    
+    // 三甲综合
+    if (hospital.type === '综合医院') {
+        tags.push('三甲综合');
+    } else if (hospital.type === '专科医院') {
+        tags.push('专科强院');
+    }
+    
+    // 百年老院（成立年份≤1926年，即≥100年）
+    if (hospital.founded) {
+        const year = parseInt(hospital.founded);
+        if (year <= 1926) {
+            tags.push('百年老院');
+        }
+    }
+    
+    // 高校附属
+    if (hospital.name.includes('大学') || hospital.name.includes('医科大学') || hospital.name.includes('首都医科')) {
+        tags.push('高校附属');
+    }
+    
+    // 医保定点（默认三甲都是）
+    tags.push('医保定点');
+    
+    return tags.slice(0, 3); // 最多显示3个
+}
 
 // 渲染医院列表
 function renderHospitals(list) {
@@ -21,6 +52,8 @@ function renderHospitals(list) {
     list.forEach((h, index) => {
         const card = document.createElement('div');
         card.className = "hospital-card bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col gap-4";
+        
+        const tags = generateHospitalTags(h);
         
         card.innerHTML = `
             <div class="flex justify-between items-start">
@@ -40,7 +73,7 @@ function renderHospitals(list) {
             <div class="bg-slate-50/50 rounded-2xl p-4">
                 <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-3 block">优势专科排名</span>
                 <div class="space-y-3">
-                    ${h.topDepts.map(d => `
+                    ${h.topDepts.slice(0, 3).map(d => `
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-bold text-slate-700">${d.name}</span>
                             <span class="bg-amber-100 text-amber-700 text-[10px] px-3 py-1 rounded-full font-black italic">
@@ -52,10 +85,10 @@ function renderHospitals(list) {
             </div>
             
             <div class="flex items-center justify-between pt-2">
-                <div class="flex gap-2">
-                    ${h.features.slice(0, 2).map(f => `
-                        <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
-                            # ${f}
+                <div class="flex gap-2 flex-wrap">
+                    ${tags.map(tag => `
+                        <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">
+                            # ${tag}
                         </span>
                     `).join('')}
                 </div>
@@ -80,6 +113,7 @@ async function handleSearch() {
         aiBox.classList.add('hidden');
         document.getElementById('deptTabsSection').classList.add('hidden');
         listTitle.innerText = "推荐医院";
+        listSubtitle.innerText = "为您精选北京 TOP 医院";
         renderHospitals(hospitals);
         return;
     }
@@ -212,6 +246,7 @@ function filterHospitalsByDept(deptName, symptom = '') {
     });
     
     listTitle.innerText = `针对"${deptName}"的优势医院`;
+    listSubtitle.innerText = `以下这些医院的${deptName}为优势科室，供您参考`;
     renderHospitals(filtered.length > 0 ? filtered : hospitals);
 }
 
@@ -240,6 +275,7 @@ function fallbackSearch(val) {
     
     aiResultText.innerText = `💡 导诊建议\n根据症状分析，建议就诊 ${foundDept}。`;
     listTitle.innerText = `针对"${foundDept}"的优势医院`;
+    listSubtitle.innerText = `以下这些医院的${foundDept}为优势科室，供您参考`;
     
     // 筛选相关医院
     const filtered = hospitals.filter(h => 
