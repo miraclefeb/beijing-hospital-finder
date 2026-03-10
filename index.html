@@ -7,11 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
         
         body {
             font-family: 'Noto Sans SC', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f6f8fa;
             -webkit-tap-highlight-color: transparent;
         }
         
@@ -42,6 +42,13 @@
         /* 隐藏滚动条但保留功能 */
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
+        }
+        
+        /* Tab 激活状态 */
+        .tab-active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
     </style>
 </head>
@@ -90,26 +97,28 @@
         </p>
     </div>
 
-    <!-- AI 导诊结果反馈区 -->
-    <div id="aiAnalysis" class="hidden mx-4 mt-4 p-5 bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl text-white shadow-xl shadow-blue-100 transition-all">
-        <div class="flex items-start gap-3">
-            <div class="bg-white/20 p-2 rounded-xl backdrop-blur-md">
-                <i data-lucide="sparkles" class="w-5 h-5"></i>
-            </div>
-            <div class="flex-1">
-                <h3 class="font-bold text-blue-50">AI 推荐匹配科室</h3>
-                <p id="aiResultText" class="text-sm text-white/90 mt-2 leading-relaxed font-medium"></p>
-                <div class="mt-4 flex flex-wrap items-center gap-3">
-                    <div class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/20">
-                        <span class="text-[10px] text-blue-100 block opacity-70">推荐科室</span>
-                        <span id="recommendedDept" class="text-sm font-bold italic"></span>
-                    </div>
-                    <div class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/20">
-                        <span class="text-[10px] text-blue-100 block opacity-70">匹配准确度</span>
-                        <span class="text-sm font-bold">98%</span>
-                    </div>
-                </div>
-            </div>
+    <!-- AI 导诊结果反馈区（Gemini 风格）-->
+    <div id="aiAnalysis" class="hidden mx-4 mt-4 bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden transition-all">
+        <!-- 蓝色顶部条 -->
+        <div class="bg-blue-600 px-5 py-3 flex items-center justify-between">
+            <span class="text-white text-xs font-bold flex items-center gap-1">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> 
+                AI 推荐匹配科室
+            </span>
+            <span class="text-blue-100 text-[10px]">北京三甲大数据分析</span>
+        </div>
+        
+        <!-- 白色内容区 -->
+        <div class="p-5">
+            <p id="aiResultText" class="text-[13px] text-slate-600 leading-relaxed font-medium whitespace-pre-line"></p>
+        </div>
+    </div>
+
+    <!-- 科室切换 Tab（多科室时显示）-->
+    <div id="deptTabsSection" class="hidden mx-4 mt-4">
+        <p class="text-[11px] font-black text-slate-400 mb-3 px-1 uppercase tracking-tighter">切换查看科室优势医院</p>
+        <div id="deptTabs" class="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
+            <!-- 动态生成科室 Tab -->
         </div>
     </div>
 

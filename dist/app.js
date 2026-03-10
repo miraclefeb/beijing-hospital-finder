@@ -3,7 +3,6 @@ const container = document.getElementById('hospitalContainer');
 const searchInput = document.getElementById('searchInput');
 const aiBox = document.getElementById('aiAnalysis');
 const aiResultText = document.getElementById('aiResultText');
-const recommendedDept = document.getElementById('recommendedDept');
 const listTitle = document.getElementById('listTitle');
 
 // 渲染医院列表
@@ -79,6 +78,7 @@ async function handleSearch() {
     
     if (!val) {
         aiBox.classList.add('hidden');
+        document.getElementById('deptTabsSection').classList.add('hidden');
         listTitle.innerText = "推荐医院";
         renderHospitals(hospitals);
         return;
@@ -88,7 +88,6 @@ async function handleSearch() {
     aiBox.classList.remove('hidden');
     aiBox.classList.add('loading-pulse');
     aiResultText.innerText = "AI 正在分析您的症状...";
-    recommendedDept.innerText = "...";
     
     try {
         // 直接 HTTP 调用云函数
@@ -112,20 +111,20 @@ async function handleSearch() {
             const { department, analysis } = result.data;
             
             aiResultText.innerText = analysis;
-            recommendedDept.innerText = department;
-            listTitle.innerText = `针对"${department}"的优势医院`;
             
-            // 筛选相关医院
-            const filtered = hospitals.filter(h => 
-                h.topDepts.some(d => d.name.includes(department)) || 
-                h.keywords.some(k => val.includes(k))
-            ).sort((a, b) => {
-                const rA = a.topDepts.find(d => d.name.includes(department))?.rank || 99;
-                const rB = b.topDepts.find(d => d.name.includes(department))?.rank || 99;
-                return rA - rB;
-            });
+            // 提取多个科室
+            const departments = extractDepartments(analysis, department);
             
-            renderHospitals(filtered.length > 0 ? filtered : hospitals);
+            // 如果有多个科室，显示 Tab
+            if (departments.length > 1) {
+                renderDeptTabs(departments);
+                document.getElementById('deptTabsSection').classList.remove('hidden');
+            } else {
+                document.getElementById('deptTabsSection').classList.add('hidden');
+            }
+            
+            // 默认显示第一个科室的医院
+            filterHospitalsByDept(departments[0] || department, val);
         } else {
             // AI 分析失败，降级到关键词匹配
             console.error('AI 分析失败:', result);
@@ -141,40 +140,118 @@ async function handleSearch() {
     }
 }
 
+// 提取科室列表
+function extractDepartments(analysis, primaryDept) {
+    const depts = [];
+    
+    // 提取首选科室
+    const primaryMatch = analysis.match(/首选科室[：:]\s*([^\n]+)/);
+    if (primaryMatch) {
+        const dept = primaryMatch[1].replace(/[✅🏥💡🔄•\s]/g, '').split(/[，,、]/)[0];
+        if (dept) depts.push(dept);
+    }
+    
+    // 提取备选科室
+    const secondaryMatch = analysis.match(/备选科室[：:]\s*([^\n]+)/);
+    if (secondaryMatch) {
+        const secondaryText = secondaryMatch[1];
+        const secondaryDepts = secondaryText.split(/[、，,]/).map(s => {
+            return s.trim().replace(/[•\s]/g, '').split(/[（(]/)[0];
+        }).filter(s => s && s.includes('科'));
+        depts.push(...secondaryDepts);
+    }
+    
+    // 如果没提取到，使用主科室
+    if (depts.length === 0 && primaryDept) {
+        depts.push(primaryDept);
+    }
+    
+    return [...new Set(depts)]; // 去重
+}
+
+// 渲染科室 Tab
+function renderDeptTabs(depts) {
+    const tabsHtml = depts.map((dept, index) => `
+        <button 
+            onclick="switchDept('${dept}', this)" 
+            class="whitespace-nowrap px-5 py-2 rounded-full text-xs font-bold transition-all ${
+                index === 0 
+                    ? 'tab-active' 
+                    : 'bg-white text-slate-400 border border-slate-200'
+            }"
+        >
+            ${dept}
+        </button>
+    `).join('');
+    
+    document.getElementById('deptTabs').innerHTML = tabsHtml;
+    lucide.createIcons();
+}
+
+// 切换科室
+function switchDept(deptName, btn) {
+    // 更新 Tab 样式
+    document.querySelectorAll('#deptTabs button').forEach(b => {
+        b.className = "whitespace-nowrap px-5 py-2 rounded-full text-xs font-bold transition-all bg-white text-slate-400 border border-slate-200";
+    });
+    btn.className = "whitespace-nowrap px-5 py-2 rounded-full text-xs font-bold transition-all tab-active";
+    
+    // 筛选并显示医院
+    filterHospitalsByDept(deptName, searchInput.value);
+}
+
+// 根据科室筛选医院
+function filterHospitalsByDept(deptName, symptom = '') {
+    const filtered = hospitals.filter(h => 
+        h.topDepts.some(d => d.name.includes(deptName)) || 
+        (symptom && h.keywords.some(k => symptom.includes(k)))
+    ).sort((a, b) => {
+        const rA = a.topDepts.find(d => d.name.includes(deptName))?.rank || 99;
+        const rB = b.topDepts.find(d => d.name.includes(deptName))?.rank || 99;
+        return rA - rB;
+    });
+    
+    listTitle.innerText = `针对"${deptName}"的优势医院`;
+    renderHospitals(filtered.length > 0 ? filtered : hospitals);
+}
+
 // 降级方案：关键词匹配
 function fallbackSearch(val) {
-    // 查找匹配的症状
-    let foundKey = Object.keys(aiKnowledge).find(k => val.includes(k));
+    // 简单的关键词匹配
+    const symptomMap = {
+        '嗓子': '耳鼻咽喉科',
+        '喉咙': '耳鼻咽喉科',
+        '头疼': '神经内科',
+        '头痛': '神经内科',
+        '骨折': '骨科',
+        '腰痛': '骨科',
+        '咳嗽': '呼吸内科',
+        '发烧': '感染科',
+        '小孩': '儿科'
+    };
     
-    if (foundKey) {
-        const info = aiKnowledge[foundKey];
-        aiResultText.innerText = info.analysis;
-        recommendedDept.innerText = info.dept;
-        listTitle.innerText = `针对"${info.dept}"的优势医院`;
-        
-        // 筛选相关医院
-        const filtered = hospitals.filter(h => 
-            h.topDepts.some(d => d.name.includes(info.dept)) || 
-            h.keywords.some(k => val.includes(k))
-        ).sort((a, b) => {
-            const rA = a.topDepts.find(d => d.name.includes(info.dept))?.rank || 99;
-            const rB = b.topDepts.find(d => d.name.includes(info.dept))?.rank || 99;
-            return rA - rB;
-        });
-        
-        renderHospitals(filtered);
-    } else {
-        // 未找到精确匹配
-        aiResultText.innerText = "AI 暂时无法精确识别该症状。建议您输入更具体的描述，或前往综合内科预检。";
-        recommendedDept.innerText = "综合内科";
-        
-        const filtered = hospitals.filter(h => 
-            h.keywords.some(k => val.includes(k)) || 
-            h.name.includes(val)
-        );
-        
-        renderHospitals(filtered.length > 0 ? filtered : hospitals);
+    let foundDept = '综合内科';
+    for (const [key, dept] of Object.entries(symptomMap)) {
+        if (val.includes(key)) {
+            foundDept = dept;
+            break;
+        }
     }
+    
+    aiResultText.innerText = `💡 导诊建议\n根据症状分析，建议就诊 ${foundDept}。`;
+    listTitle.innerText = `针对"${foundDept}"的优势医院`;
+    
+    // 筛选相关医院
+    const filtered = hospitals.filter(h => 
+        h.topDepts.some(d => d.name.includes(foundDept)) || 
+        h.keywords.some(k => val.includes(k))
+    ).sort((a, b) => {
+        const rA = a.topDepts.find(d => d.name.includes(foundDept))?.rank || 99;
+        const rB = b.topDepts.find(d => d.name.includes(foundDept))?.rank || 99;
+        return rA - rB;
+    });
+    
+    renderHospitals(filtered);
 }
 
 // 快速搜索
