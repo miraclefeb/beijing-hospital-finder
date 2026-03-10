@@ -16,7 +16,10 @@ const hospitals = [
             { name: "皮肤科", rank: 5 },
             { name: "呼吸内科", rank: 3 },
             { name: "消化内科", rank: 1 },
-            { name: "心血管内科", rank: 3 }
+            { name: "心血管内科", rank: 3 },
+            { name: "肾脏病", rank: 3 },
+            { name: "血液内科", rank: 3 },
+            { name: "感染科", rank: 8 }
         ],
         features: ["罕见病诊疗", "多学科协作", "疑难重症", "百年名院"],
         address: "东城区帅府园1号（东院）",
@@ -58,7 +61,8 @@ const hospitals = [
             { name: "普外科", rank: 5 },
             { name: "呼吸内科", rank: 7 },
             { name: "消化内科", rank: 8 },
-            { name: "神经内科", rank: 7 }
+            { name: "神经内科", rank: 7 },
+            { name: "内分泌科", rank: 5 }
         ],
         features: ["肾脏病", "泌尿外科", "中央保健基地"],
         address: "西城区西什库大街8号",
@@ -309,7 +313,8 @@ const hospitals = [
             { name: "呼吸内科", rank: 2 },
             { name: "肾脏病", rank: 2 },
             { name: "疼痛科", rank: 2 },
-            { name: "皮肤科", rank: 8 }
+            { name: "皮肤科", rank: 8 },
+            { name: "内分泌科", rank: 8 }
         ],
         features: ["呼吸病", "肾脏病", "疼痛科", "中西医结合"],
         address: "朝阳区樱花园东街2号",
