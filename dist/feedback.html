@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>意见反馈 - 帝都医院查询</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f6f8fa;
+        }
+    </style>
+</head>
+<body class="text-slate-800 pb-24">
+    <!-- 顶部 -->
+    <div class="bg-white px-5 pt-8 pb-5 border-b border-slate-100 flex items-center gap-3">
+        <a href="./my.html" class="text-slate-400">
+            <i data-lucide="arrow-left" class="w-6 h-6"></i>
+        </a>
+        <h1 class="text-2xl font-black text-blue-600">意见反馈</h1>
+    </div>
+
+    <!-- 反馈表单 -->
+    <div class="mx-4 mt-4 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+        <form id="feedbackForm" class="space-y-5">
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">反馈类型</label>
+                <select id="feedbackType" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                    <option value="bug">功能问题</option>
+                    <option value="data">数据错误</option>
+                    <option value="suggestion">功能建议</option>
+                    <option value="other">其他</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">详细描述</label>
+                <textarea 
+                    id="feedbackContent"
+                    placeholder="请详细描述您遇到的问题或建议..." 
+                    rows="6"
+                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none resize-none"
+                    required
+                ></textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">联系方式（可选）</label>
+                <input 
+                    type="text" 
+                    id="contact"
+                    placeholder="手机号或微信，方便我们联系您" 
+                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                >
+            </div>
+
+            <button 
+                type="submit"
+                class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-200"
+            >
+                提交反馈
+            </button>
+        </form>
+
+        <div id="message" class="hidden mt-4 p-3 rounded-xl text-sm text-center"></div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const feedbackForm = document.getElementById('feedbackForm');
+        const messageBox = document.getElementById('message');
+
+        feedbackForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const type = document.getElementById('feedbackType').value;
+            const content = document.getElementById('feedbackContent').value;
+            const contact = document.getElementById('contact').value;
+            const userPhone = localStorage.getItem('userPhone') || '游客';
+
+            // 构建反馈数据
+            const feedback = {
+                type: type,
+                content: content,
+                contact: contact || userPhone,
+                userPhone: userPhone,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            };
+
+            showMessage('提交中...', 'info');
+
+            // 模拟提交（实际应该调用后端API保存到数据库）
+            setTimeout(() => {
+                console.log('反馈数据:', feedback);
+                
+                // 保存到 localStorage（临时方案）
+                const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+                feedbacks.push(feedback);
+                localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+                
+                showMessage('感谢您的反馈！我们会尽快处理。', 'success');
+                
+                // 2秒后返回
+                setTimeout(() => {
+                    window.location.href = './my.html';
+                }, 2000);
+            }, 1000);
+        });
+
+        function showMessage(text, type) {
+            messageBox.classList.remove('hidden', 'bg-red-50', 'text-red-600', 'bg-green-50', 'text-green-600', 'bg-blue-50', 'text-blue-600');
+            
+            if (type === 'error') {
+                messageBox.classList.add('bg-red-50', 'text-red-600');
+            } else if (type === 'success') {
+                messageBox.classList.add('bg-green-50', 'text-green-600');
+            } else {
+                messageBox.classList.add('bg-blue-50', 'text-blue-600');
+            }
+            
+            messageBox.innerText = text;
+            messageBox.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

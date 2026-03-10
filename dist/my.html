@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的 - 帝都医院查询</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f6f8fa;
+        }
+    </style>
+</head>
+<body class="text-slate-800 pb-24">
+    <!-- 顶部 -->
+    <div class="bg-white px-5 pt-8 pb-5 border-b border-slate-100">
+        <h1 class="text-2xl font-black text-blue-600">我的</h1>
+    </div>
+
+    <!-- 用户信息 -->
+    <div class="mx-4 mt-4 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white">
+                <i data-lucide="user" class="w-8 h-8"></i>
+            </div>
+            <div>
+                <h2 class="text-lg font-bold text-slate-800" id="userName">用户</h2>
+                <p class="text-sm text-slate-500" id="userPhone">未登录</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 功能列表 -->
+    <div class="mx-4 mt-4 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <a href="./feedback.html" class="flex items-center justify-between p-4 border-b border-slate-100 active:bg-slate-50">
+            <div class="flex items-center gap-3">
+                <i data-lucide="message-square" class="w-5 h-5 text-blue-600"></i>
+                <span class="font-bold text-slate-700">意见反馈</span>
+            </div>
+            <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300"></i>
+        </a>
+        
+        <button onclick="logout()" class="w-full flex items-center justify-between p-4 active:bg-slate-50">
+            <div class="flex items-center gap-3">
+                <i data-lucide="log-out" class="w-5 h-5 text-red-600"></i>
+                <span class="font-bold text-red-600">退出登录</span>
+            </div>
+            <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300"></i>
+        </button>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-slate-100 px-12 py-3 flex justify-around items-center z-50">
+        <a href="./index.html" class="flex flex-col items-center text-slate-400">
+            <i data-lucide="home" class="w-6 h-6"></i>
+            <span class="text-[10px] mt-1 font-medium">首页</span>
+        </a>
+        <button class="flex flex-col items-center text-blue-600">
+            <i data-lucide="user-round" class="w-6 h-6"></i>
+            <span class="text-[10px] mt-1 font-bold">我的</span>
+        </button>
+    </nav>
+
+    <script>
+        lucide.createIcons();
+
+        // 加载用户信息
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        const userPhone = localStorage.getItem('userPhone');
+
+        if (isLoggedIn === 'true' && userPhone) {
+            document.getElementById('userName').innerText = '用户';
+            document.getElementById('userPhone').innerText = userPhone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
+        } else {
+            document.getElementById('userName').innerText = '游客';
+            document.getElementById('userPhone').innerText = '未登录';
+        }
+
+        // 退出登录
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userPhone');
+                localStorage.removeItem('loginTime');
+                alert('已退出登录');
+                window.location.href = './index.html';
+            }
+        }
+    </script>
+</body>
+</html>
