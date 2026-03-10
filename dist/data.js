@@ -50,7 +50,7 @@ const hospitals = [
             { name: "心血管内科", rank: 9 },
             { name: "传染感染科", rank: 8 },
             { name: "普外科", rank: 5 },
-            { name: "呼吸科", rank: 7 }
+            { name: "呼吸内科", rank: 7 }
         ],
         features: ["肾脏病", "泌尿外科", "中央保健基地"],
         address: "西城区西什库大街8号",
@@ -298,7 +298,7 @@ const hospitals = [
         founded: "1984年",
         desc: "中日友好医院由中国和日本两国政府合作共建的现代化综合性医院。呼吸系统疾病诊疗技术全国领先，肾脏病诊疗技术全国领先，疼痛科诊疗技术全国领先，中西医结合诊疗技术全国领先。",
         topDepts: [
-            { name: "呼吸科", rank: 2 },
+            { name: "呼吸内科", rank: 2 },
             { name: "肾脏病", rank: 2 },
             { name: "疼痛科", rank: 2 }
         ],

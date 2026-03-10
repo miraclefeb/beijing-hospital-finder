@@ -234,14 +234,20 @@ function switchDept(deptName, btn) {
     filterHospitalsByDept(deptName, searchInput.value);
 }
 
-// 根据科室筛选医院
+// 根据科室筛选医院（智能匹配）
 function filterHospitalsByDept(deptName, symptom = '') {
+    // 提取核心科室名（去掉"内科"、"外科"等后缀）
+    const coreKeyword = deptName.replace(/(内科|外科|学科)$/, '');
+    
     const filtered = hospitals.filter(h => 
-        h.topDepts.some(d => d.name.includes(deptName)) || 
+        h.topDepts.some(d => 
+            d.name.includes(deptName) || 
+            d.name.includes(coreKeyword)
+        ) || 
         (symptom && h.keywords.some(k => symptom.includes(k)))
     ).sort((a, b) => {
-        const rA = a.topDepts.find(d => d.name.includes(deptName))?.rank || 99;
-        const rB = b.topDepts.find(d => d.name.includes(deptName))?.rank || 99;
+        const rA = a.topDepts.find(d => d.name.includes(deptName) || d.name.includes(coreKeyword))?.rank || 99;
+        const rB = b.topDepts.find(d => d.name.includes(deptName) || d.name.includes(coreKeyword))?.rank || 99;
         return rA - rB;
     });
     
