@@ -120,8 +120,8 @@ async function handleSearch() {
                 h.topDepts.some(d => d.name.includes(department)) || 
                 h.keywords.some(k => val.includes(k))
             ).sort((a, b) => {
-                const rA = h.topDepts.find(d => d.name.includes(department))?.rank || 99;
-                const rB = h.topDepts.find(d => d.name.includes(department))?.rank || 99;
+                const rA = a.topDepts.find(d => d.name.includes(department))?.rank || 99;
+                const rB = b.topDepts.find(d => d.name.includes(department))?.rank || 99;
                 return rA - rB;
             });
             
@@ -195,4 +195,3 @@ window.onload = () => {
         }
     });
 };
-// force update
