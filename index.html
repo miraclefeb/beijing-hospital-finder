@@ -6,6 +6,13 @@
     <title>帝都医院查询 - 智能导诊助手</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- vConsole 调试工具（仅在微信中加载） -->
+    <script>
+        if (/MicroMessenger/i.test(navigator.userAgent)) {
+            document.write('<script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"><\/script>');
+            document.write('<script>var vConsole = new VConsole();<\/script>');
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
         
