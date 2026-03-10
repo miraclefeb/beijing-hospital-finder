@@ -202,12 +202,19 @@ async function handleSearch() {
         
     } catch (error) {
         console.error('调用云函数失败:', error);
+        console.error('错误详情:', error.message, error.stack);
         aiBox.classList.remove('loading-pulse');
         
-        // 显示错误提示
-        aiResultText.innerText = '⚠️ AI 分析暂时失败，为您展示相关医院推荐。\n\n' + 
-            '可能原因：网络连接不稳定或服务繁忙。\n\n' +
-            '建议：稍后重试或直接查看下方医院列表。';
+        // 检测是否在微信浏览器中
+        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+        
+        // 显示详细错误提示（帮助调试）
+        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误信息：' + error.message + '\n\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        
+        aiResultText.innerText = errorMsg;
         
         // 降级到关键词匹配
         fallbackSearch(val);
