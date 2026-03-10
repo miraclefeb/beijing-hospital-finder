@@ -1,10 +1,34 @@
-// 应用逻辑
-const container = document.getElementById('hospitalContainer');
-const searchInput = document.getElementById('searchInput');
-const aiBox = document.getElementById('aiAnalysis');
-const aiResultText = document.getElementById('aiResultText');
-const listTitle = document.getElementById('listTitle');
-const listSubtitle = document.getElementById('listSubtitle');
+// 应用逻辑 - 等待 DOM 加载完成
+function initApp() {
+    console.log('开始初始化应用');
+    const container = document.getElementById('hospitalContainer');
+    const searchInput = document.getElementById('searchInput');
+    const aiBox = document.getElementById('aiAnalysis');
+    const aiResultText = document.getElementById('aiResultText');
+    const listTitle = document.getElementById('listTitle');
+    const listSubtitle = document.getElementById('listSubtitle');
+    
+    // 检查元素是否存在
+    if (!container || !searchInput || !aiBox || !aiResultText || !listTitle || !listSubtitle) {
+        console.error('页面元素未找到！');
+        console.log('container:', container);
+        console.log('searchInput:', searchInput);
+        console.log('aiBox:', aiBox);
+        console.log('aiResultText:', aiResultText);
+        console.log('listTitle:', listTitle);
+        console.log('listSubtitle:', listSubtitle);
+        return;
+    }
+    
+    console.log('所有元素已找到，初始化完成');
+    
+    // 将变量设为全局，供其他函数使用
+    window.container = container;
+    window.searchInput = searchInput;
+    window.aiBox = aiBox;
+    window.aiResultText = aiResultText;
+    window.listTitle = listTitle;
+    window.listSubtitle = listSubtitle;
 
 // 生成医院标签
 function generateHospitalTags(hospital) {
@@ -38,10 +62,10 @@ function generateHospitalTags(hospital) {
 
 // 渲染医院列表
 function renderHospitals(list) {
-    container.innerHTML = '';
+    window.container.innerHTML = '';
     
     if (list.length === 0) {
-        container.innerHTML = `
+        window.container.innerHTML = `
             <div class="text-center py-12">
                 <p class="text-slate-400 text-sm">暂无相关医院</p>
             </div>
@@ -98,7 +122,7 @@ function renderHospitals(list) {
             </div>
         `;
         
-        container.appendChild(card);
+        window.container.appendChild(card);
     });
     
     // 重新初始化图标
@@ -107,21 +131,21 @@ function renderHospitals(list) {
 
 // 处理搜索 - 调用云函数
 async function handleSearch() {
-    const val = searchInput.value.trim();
+    const val = window.searchInput.value.trim();
     
     if (!val) {
-        aiBox.classList.add('hidden');
+        window.aiBox.classList.add('hidden');
         document.getElementById('deptTabsSection').classList.add('hidden');
-        listTitle.innerText = "推荐医院";
-        listSubtitle.innerText = "为您精选北京 TOP 医院";
+        window.listTitle.innerText = "推荐医院";
+        window.listSubtitle.innerText = "为您精选北京 TOP 医院";
         renderHospitals(hospitals);
         return;
     }
     
     // 显示 AI 分析框
-    aiBox.classList.remove('hidden');
-    aiBox.classList.add('loading-pulse');
-    aiResultText.innerText = "AI 正在分析您的症状...";
+    window.aiBox.classList.remove('hidden');
+    window.aiBox.classList.add('loading-pulse');
+    window.aiResultText.innerText = "AI 正在分析您的症状...";
     
     try {
         // 直接 HTTP 调用云函数
@@ -174,12 +198,12 @@ async function handleSearch() {
         const result = await response.json();
         console.log('云函数返回:', result);
         
-        aiBox.classList.remove('loading-pulse');
+        window.aiBox.classList.remove('loading-pulse');
         
         if (result.code === 0) {
             const { department, analysis } = result.data;
             
-            aiResultText.innerText = analysis;
+            window.aiResultText.innerText = analysis;
             
             // 提取多个科室
             const departments = extractDepartments(analysis, department);
@@ -203,7 +227,7 @@ async function handleSearch() {
     } catch (error) {
         console.error('调用云函数失败:', error);
         console.error('错误详情:', error.message, error.stack);
-        aiBox.classList.remove('loading-pulse');
+        window.aiBox.classList.remove('loading-pulse');
         
         // 检测是否在微信浏览器中
         const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
@@ -214,7 +238,7 @@ async function handleSearch() {
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
         errorMsg += '为您展示相关医院推荐。';
         
-        aiResultText.innerText = errorMsg;
+        window.aiResultText.innerText = errorMsg;
         
         // 降级到关键词匹配
         fallbackSearch(val);
@@ -278,7 +302,7 @@ function switchDept(deptName, btn) {
     btn.className = "whitespace-nowrap px-5 py-2 rounded-full text-xs font-bold transition-all tab-active";
     
     // 筛选并显示医院
-    filterHospitalsByDept(deptName, searchInput.value);
+    filterHospitalsByDept(deptName, window.searchInput.value);
 }
 
 // 根据科室筛选医院（智能匹配 - 简化版）
@@ -335,8 +359,8 @@ function filterHospitalsByDept(deptName, symptom = '') {
     
     console.log('  ✅ 最终:', filtered.length, '家');
     
-    listTitle.innerText = `针对"${deptName}"的优势医院`;
-    listSubtitle.innerText = `以下这些医院的${deptName}为优势科室，供您参考`;
+    window.listTitle.innerText = `针对"${deptName}"的优势医院`;
+    window.listSubtitle.innerText = `以下这些医院的${deptName}为优势科室，供您参考`;
     renderHospitals(filtered.length > 0 ? filtered : hospitals);
 }
 
@@ -363,9 +387,9 @@ function fallbackSearch(val) {
         }
     }
     
-    aiResultText.innerText = `💡 导诊建议\n根据症状分析，建议就诊 ${foundDept}。`;
-    listTitle.innerText = `针对"${foundDept}"的优势医院`;
-    listSubtitle.innerText = `以下这些医院的${foundDept}为优势科室，供您参考`;
+    window.aiResultText.innerText = `💡 导诊建议\n根据症状分析，建议就诊 ${foundDept}。`;
+    window.listTitle.innerText = `针对"${foundDept}"的优势医院`;
+    window.listSubtitle.innerText = `以下这些医院的${foundDept}为优势科室，供您参考`;
     
     // 筛选相关医院
     const filtered = hospitals.filter(h => 
@@ -382,7 +406,7 @@ function fallbackSearch(val) {
 
 // 快速搜索
 function quickSearch(tag) {
-    searchInput.value = tag;
+    window.searchInput.value = tag;
     handleSearch();
 }
 
@@ -392,7 +416,7 @@ window.onload = () => {
     lucide.createIcons();
     
     // 回车搜索
-    searchInput.addEventListener('keypress', (e) => {
+    window.searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             handleSearch();
         }
@@ -404,18 +428,42 @@ function checkLoginStatus() {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const userPhone = localStorage.getItem('userPhone');
     
-    if (isLoggedIn === 'true' && userPhone) {
+    const loginBtn = document.getElementById('loginBtn');
+    const userInfo = document.getElementById('userInfo');
+    const userPhoneEl = document.getElementById('userPhone');
+    
+    if (!loginBtn || !userInfo) return;
+    
+    if (isLoggedIn === 'true' && userPhone && userPhoneEl) {
         // 显示用户信息
-        document.getElementById('loginBtn').classList.add('hidden');
-        document.getElementById('userInfo').classList.remove('hidden');
-        document.getElementById('userPhone').innerText = userPhone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
-        lucide.createIcons();
+        loginBtn.classList.add('hidden');
+        userInfo.classList.remove('hidden');
+        userPhoneEl.innerText = userPhone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     } else {
         // 显示登录按钮
-        document.getElementById('loginBtn').classList.remove('hidden');
-        document.getElementById('userInfo').classList.add('hidden');
+        loginBtn.classList.remove('hidden');
+        userInfo.classList.add('hidden');
     }
 }
 
-// 页面加载时检查登录状态
-checkLoginStatus();
+    // 初始化页面
+    renderHospitals(hospitals);
+    checkLoginStatus();
+    
+    // 初始化图标
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+}
+
+// 如果 DOM 已经加载完成，立即初始化
+if (document.readyState === 'loading') {
+    // DOM 还在加载中
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    // DOM 已经加载完成
+    initApp();
+}
