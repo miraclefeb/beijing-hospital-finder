@@ -127,23 +127,43 @@ async function handleSearch() {
         // 直接 HTTP 调用云函数
         console.log('开始调用云函数，症状:', val);
         console.log('请求 URL:', 'https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1');
+        console.log('User Agent:', navigator.userAgent);
         
-        // 添加超时控制
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 20000); // 20秒超时
+        // 检测是否在微信浏览器中
+        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+        console.log('是否微信浏览器:', isWeChat);
         
-        const response = await fetch('https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                symptom: val
-            }),
-            signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
+        // 微信浏览器兼容方案：不使用 AbortController
+        let response;
+        if (isWeChat) {
+            // 微信浏览器：简单的 fetch，不使用超时控制
+            response = await fetch('https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    symptom: val
+                })
+            });
+        } else {
+            // 普通浏览器：使用超时控制
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 20000);
+            
+            response = await fetch('https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    symptom: val
+                }),
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+        }
         
         console.log('HTTP 状态码:', response.status);
         
