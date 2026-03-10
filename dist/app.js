@@ -308,3 +308,24 @@ window.onload = () => {
         }
     });
 };
+
+// 检查登录状态
+function checkLoginStatus() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const userPhone = localStorage.getItem('userPhone');
+    
+    if (isLoggedIn === 'true' && userPhone) {
+        // 显示用户信息
+        document.getElementById('loginBtn').classList.add('hidden');
+        document.getElementById('userInfo').classList.remove('hidden');
+        document.getElementById('userPhone').innerText = userPhone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
+        lucide.createIcons();
+    } else {
+        // 显示登录按钮
+        document.getElementById('loginBtn').classList.remove('hidden');
+        document.getElementById('userInfo').classList.add('hidden');
+    }
+}
+
+// 页面加载时检查登录状态
+checkLoginStatus();
