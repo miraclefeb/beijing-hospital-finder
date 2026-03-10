@@ -14,7 +14,9 @@ const hospitals = [
             { name: "普外科", rank: 1 },
             { name: "神经内科", rank: 1 },
             { name: "皮肤科", rank: 5 },
-            { name: "呼吸内科", rank: 3 }
+            { name: "呼吸内科", rank: 3 },
+            { name: "消化内科", rank: 1 },
+            { name: "心血管内科", rank: 3 }
         ],
         features: ["罕见病诊疗", "多学科协作", "疑难重症", "百年名院"],
         address: "东城区帅府园1号（东院）",
@@ -33,7 +35,8 @@ const hospitals = [
             { name: "妇产科", rank: 3 },
             { name: "运动医学", rank: 1 },
             { name: "普外科", rank: 9 },
-            { name: "儿科", rank: 7 }
+            { name: "儿科", rank: 7 },
+            { name: "消化内科", rank: 5 }
         ],
         features: ["试管婴儿", "运动损伤", "脊柱外科", "关节置换"],
         address: "海淀区花园北路49号",
@@ -53,7 +56,9 @@ const hospitals = [
             { name: "心血管内科", rank: 9 },
             { name: "传染感染科", rank: 8 },
             { name: "普外科", rank: 5 },
-            { name: "呼吸内科", rank: 7 }
+            { name: "呼吸内科", rank: 7 },
+            { name: "消化内科", rank: 8 },
+            { name: "神经内科", rank: 7 }
         ],
         features: ["肾脏病", "泌尿外科", "中央保健基地"],
         address: "西城区西什库大街8号",
