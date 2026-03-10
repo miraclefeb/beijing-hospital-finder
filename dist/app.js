@@ -6,11 +6,6 @@ const aiResultText = document.getElementById('aiResultText');
 const recommendedDept = document.getElementById('recommendedDept');
 const listTitle = document.getElementById('listTitle');
 
-// 初始化 CloudBase
-const app = tcb.init({
-  env: 'hospital-search-7gnfne58d97018a9-1404181085'
-});
-
 // 渲染医院列表
 function renderHospitals(list) {
     container.innerHTML = '';
@@ -96,21 +91,25 @@ async function handleSearch() {
     recommendedDept.innerText = "...";
     
     try {
-        // 调用云函数
+        // 直接 HTTP 调用云函数
         console.log('开始调用云函数，症状:', val);
-        const result = await app.callFunction({
-            name: 'aiTriage',
-            data: {
+        const response = await fetch('https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 symptom: val
-            }
+            })
         });
         
+        const result = await response.json();
         console.log('云函数返回:', result);
         
         aiBox.classList.remove('loading-pulse');
         
-        if (result.result && result.result.code === 0) {
-            const { department, analysis } = result.result.data;
+        if (result.code === 0) {
+            const { department, analysis } = result.data;
             
             aiResultText.innerText = analysis;
             recommendedDept.innerText = department;
