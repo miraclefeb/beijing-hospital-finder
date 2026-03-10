@@ -131,6 +131,13 @@ function renderHospitals(list) {
 
 // 处理搜索 - 调用云函数
 async function handleSearch() {
+    // 确保全局变量已初始化
+    if (!window.searchInput || !window.aiBox || !window.aiResultText) {
+        console.error('页面元素未初始化！');
+        alert('页面加载中，请稍后再试');
+        return;
+    }
+    
     const val = window.searchInput.value.trim();
     
     if (!val) {
