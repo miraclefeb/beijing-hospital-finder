@@ -239,17 +239,25 @@ function filterHospitalsByDept(deptName, symptom = '') {
     // 提取核心科室名（去掉"内科"、"外科"等后缀）
     const coreKeyword = deptName.replace(/(内科|外科|学科)$/, '');
     
-    const filtered = hospitals.filter(h => 
+    // 优先匹配：有该科室的医院
+    const withDept = hospitals.filter(h => 
         h.topDepts.some(d => 
             d.name.includes(deptName) || 
             d.name.includes(coreKeyword)
-        ) || 
-        (symptom && h.keywords.some(k => symptom.includes(k)))
+        )
     ).sort((a, b) => {
         const rA = a.topDepts.find(d => d.name.includes(deptName) || d.name.includes(coreKeyword))?.rank || 99;
         const rB = b.topDepts.find(d => d.name.includes(deptName) || d.name.includes(coreKeyword))?.rank || 99;
         return rA - rB;
     });
+    
+    // 次要匹配：关键词匹配但没有该科室的医院（排在后面）
+    const withKeyword = hospitals.filter(h => 
+        !h.topDepts.some(d => d.name.includes(deptName) || d.name.includes(coreKeyword)) &&
+        symptom && h.keywords.some(k => symptom.includes(k))
+    );
+    
+    const filtered = [...withDept, ...withKeyword];
     
     listTitle.innerText = `针对"${deptName}"的优势医院`;
     listSubtitle.innerText = `以下这些医院的${deptName}为优势科室，供您参考`;
