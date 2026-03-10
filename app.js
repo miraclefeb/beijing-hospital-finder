@@ -126,6 +126,12 @@ async function handleSearch() {
     try {
         // 直接 HTTP 调用云函数
         console.log('开始调用云函数，症状:', val);
+        console.log('请求 URL:', 'https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1');
+        
+        // 添加超时控制
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 20000); // 20秒超时
+        
         const response = await fetch('https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1', {
             method: 'POST',
             headers: {
@@ -133,8 +139,17 @@ async function handleSearch() {
             },
             body: JSON.stringify({
                 symptom: val
-            })
+            }),
+            signal: controller.signal
         });
+        
+        clearTimeout(timeoutId);
+        
+        console.log('HTTP 状态码:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         
         const result = await response.json();
         console.log('云函数返回:', result);
@@ -168,6 +183,11 @@ async function handleSearch() {
     } catch (error) {
         console.error('调用云函数失败:', error);
         aiBox.classList.remove('loading-pulse');
+        
+        // 显示错误提示
+        aiResultText.innerText = '⚠️ AI 分析暂时失败，为您展示相关医院推荐。\n\n' + 
+            '可能原因：网络连接不稳定或服务繁忙。\n\n' +
+            '建议：稍后重试或直接查看下方医院列表。';
         
         // 降级到关键词匹配
         fallbackSearch(val);

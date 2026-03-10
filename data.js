@@ -25,7 +25,11 @@ const hospitals = [
             { name: "泌尿外科", rank: 3 },
             { name: "心脏外科", rank: 5 },
             { name: "肝胆外科", rank: 3 },
-            { name: "血管外科", rank: 2 }
+            { name: "血管外科", rank: 2 },
+            { name: "耳鼻喉科", rank: 5 },
+            { name: "口腔科", rank: 8 },
+            { name: "肿瘤科", rank: 5 },
+            { name: "眼科", rank: 5 }
         ],
         features: ["罕见病诊疗", "多学科协作", "疑难重症", "百年名院"],
         address: "东城区帅府园1号（东院）",
