@@ -270,7 +270,21 @@ function filterHospitalsByDept(deptName, symptom = '') {
     
     console.log('  第2层:', withKeyword.length, '家');
     
-    const filtered = [...withDept, ...withKeyword];
+    // 第3层：综合医院降级（常见科室如果数据不全，显示综合医院）
+    const commonDepts = ['呼吸内科', '皮肤科', '消化内科', '心血管内科', '神经内科', '内分泌科', '泌尿外科', '普外科'];
+    let withGeneral = [];
+    
+    if (commonDepts.includes(deptName)) {
+        withGeneral = hospitals.filter(h => 
+            h.type === '综合医院' &&
+            !h.topDepts.some(d => d.name.includes(deptName) || d.name.includes(coreKeyword)) &&
+            !(symptom && h.keywords.some(k => symptom.includes(k)))
+        ).slice(0, 10); // 最多显示10家综合医院
+    }
+    
+    console.log('  第3层（综合医院降级）:', withGeneral.length, '家');
+    
+    const filtered = [...withDept, ...withKeyword, ...withGeneral];
     
     console.log('  ✅ 最终:', filtered.length, '家');
     
