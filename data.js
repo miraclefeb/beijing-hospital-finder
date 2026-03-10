@@ -12,7 +12,9 @@ const hospitals = [
             { name: "内分泌科", rank: 2 },
             { name: "妇产科", rank: 1 },
             { name: "普外科", rank: 1 },
-            { name: "神经内科", rank: 1 }
+            { name: "神经内科", rank: 1 },
+            { name: "皮肤科", rank: 5 },
+            { name: "呼吸内科", rank: 3 }
         ],
         features: ["罕见病诊疗", "多学科协作", "疑难重症", "百年名院"],
         address: "东城区帅府园1号（东院）",
@@ -47,6 +49,7 @@ const hospitals = [
         topDepts: [
             { name: "肾脏病", rank: 1 },
             { name: "泌尿外科", rank: 2 },
+            { name: "皮肤科", rank: 1 },
             { name: "心血管内科", rank: 9 },
             { name: "传染感染科", rank: 8 },
             { name: "普外科", rank: 5 },
@@ -300,7 +303,8 @@ const hospitals = [
         topDepts: [
             { name: "呼吸内科", rank: 2 },
             { name: "肾脏病", rank: 2 },
-            { name: "疼痛科", rank: 2 }
+            { name: "疼痛科", rank: 2 },
+            { name: "皮肤科", rank: 8 }
         ],
         features: ["呼吸病", "肾脏病", "疼痛科", "中西医结合"],
         address: "朝阳区樱花园东街2号",
@@ -1176,5 +1180,37 @@ const hospitals = [
         address: "密云区新东路235号",
         phone: "010-69043020",
         keywords: ["中医", "中药", "针灸"]
+    },
+    {
+        name: "空军特色医学中心",
+        rank: "三甲",
+        type: "综合医院",
+        founded: "1950年",
+        desc: "空军特色医学中心（原空军总医院）是一所集医疗、教学、科研为一体的三级甲等综合医院。皮肤科在全国处于领先地位，尤其在皮肤病、性病诊疗方面具有显著优势。",
+        topDepts: [
+            { name: "皮肤科", rank: 3 },
+            { name: "骨科", rank: 10 },
+            { name: "神经外科", rank: 10 }
+        ],
+        features: ["皮肤病", "性病", "激光美容"],
+        address: "海淀区阜成路30号",
+        phone: "010-68410099",
+        keywords: ["皮肤", "湿疹", "痤疮", "白癜风", "性病"]
+    },
+    {
+        name: "中国医学科学院整形外科医院",
+        rank: "三甲",
+        type: "专科医院",
+        founded: "1957年",
+        desc: "中国医学科学院整形外科医院（八大处整形医院）是中国整形外科事业的摇篮。在整形外科、皮肤美容、激光治疗等领域处于国内领先地位。",
+        topDepts: [
+            { name: "整形外科", rank: 1 },
+            { name: "皮肤科", rank: 5 },
+            { name: "激光美容科", rank: 1 }
+        ],
+        features: ["整形美容", "皮肤美容", "激光治疗"],
+        address: "石景山区石景山路33号",
+        phone: "010-88772233",
+        keywords: ["整形", "美容", "皮肤", "激光", "祛斑", "除皱"]
     }
 ];
