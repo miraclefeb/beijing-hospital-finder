@@ -234,12 +234,21 @@ function switchDept(deptName, btn) {
     filterHospitalsByDept(deptName, searchInput.value);
 }
 
-// 根据科室筛选医院（智能匹配）
+// 根据科室筛选医院（智能匹配 - 简化版）
 function filterHospitalsByDept(deptName, symptom = '') {
-    // 提取核心科室名（去掉"内科"、"外科"等后缀）
-    const coreKeyword = deptName.replace(/(内科|外科|学科)$/, '');
+    // 提取核心科室名（使用简单字符串方法）
+    let coreKeyword = deptName;
+    if (deptName.endsWith('内科')) {
+        coreKeyword = deptName.slice(0, -2);
+    } else if (deptName.endsWith('外科')) {
+        coreKeyword = deptName.slice(0, -2);
+    } else if (deptName.endsWith('学科')) {
+        coreKeyword = deptName.slice(0, -2);
+    }
     
-    // 优先匹配：有该科室的医院
+    console.log('🔍 科室筛选:', deptName, '→', coreKeyword);
+    
+    // 第1层：有该科室的医院（按排名排序）
     const withDept = hospitals.filter(h => 
         h.topDepts.some(d => 
             d.name.includes(deptName) || 
@@ -251,13 +260,19 @@ function filterHospitalsByDept(deptName, symptom = '') {
         return rA - rB;
     });
     
-    // 次要匹配：关键词匹配但没有该科室的医院（排在后面）
+    console.log('  第1层:', withDept.length, '家');
+    
+    // 第2层：关键词匹配但没有该科室的医院
     const withKeyword = hospitals.filter(h => 
         !h.topDepts.some(d => d.name.includes(deptName) || d.name.includes(coreKeyword)) &&
         symptom && h.keywords.some(k => symptom.includes(k))
     );
     
+    console.log('  第2层:', withKeyword.length, '家');
+    
     const filtered = [...withDept, ...withKeyword];
+    
+    console.log('  ✅ 最终:', filtered.length, '家');
     
     listTitle.innerText = `针对"${deptName}"的优势医院`;
     listSubtitle.innerText = `以下这些医院的${deptName}为优势科室，供您参考`;
