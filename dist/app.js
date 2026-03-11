@@ -131,11 +131,22 @@ function renderHospitals(list) {
 
 // 处理搜索 - 调用云函数
 async function handleSearch() {
-    // 确保全局变量已初始化
+    // 确保全局变量已初始化，如果没有则尝试初始化
     if (!window.searchInput || !window.aiBox || !window.aiResultText) {
-        console.error('页面元素未初始化！');
-        alert('页面加载中，请稍后再试');
-        return;
+        console.warn('页面元素未初始化，尝试手动获取...');
+        window.searchInput = window.searchInput || document.getElementById('searchInput');
+        window.aiBox = window.aiBox || document.getElementById('aiAnalysis');
+        window.aiResultText = window.aiResultText || document.getElementById('aiResultText');
+        window.listTitle = window.listTitle || document.getElementById('listTitle');
+        window.listSubtitle = window.listSubtitle || document.getElementById('listSubtitle');
+        window.container = window.container || document.getElementById('hospitalContainer');
+        
+        // 再次检查
+        if (!window.searchInput || !window.aiBox || !window.aiResultText) {
+            console.error('页面元素未找到！');
+            alert('页面加载失败，请刷新重试');
+            return;
+        }
     }
     
     const val = window.searchInput.value.trim();
@@ -413,7 +424,14 @@ function fallbackSearch(val) {
 
 // 快速搜索
 function quickSearch(tag) {
-    window.searchInput.value = tag;
+    // 确保元素已初始化
+    const searchInput = window.searchInput || document.getElementById('searchInput');
+    if (!searchInput) {
+        console.error('搜索框未找到');
+        return;
+    }
+    
+    searchInput.value = tag;
     handleSearch();
 }
 
