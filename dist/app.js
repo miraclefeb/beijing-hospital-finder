@@ -61,7 +61,7 @@ function generateHospitalTags(hospital) {
 }
 
 // 渲染医院列表
-function renderHospitals(list) {
+function renderHospitals(list, highlightDept = null) {
     window.container.innerHTML = '';
     
     if (list.length === 0) {
@@ -78,6 +78,25 @@ function renderHospitals(list) {
         card.className = "hospital-card bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col gap-4";
         
         const tags = generateHospitalTags(h);
+        
+        // 决定显示哪些科室
+        let deptsToShow = [];
+        if (highlightDept) {
+            // 如果指定了科室，优先显示该科室
+            const targetDept = h.topDepts.find(d => d.name.includes(highlightDept) || highlightDept.includes(d.name));
+            if (targetDept) {
+                deptsToShow.push(targetDept);
+                // 再添加其他科室，最多3个
+                const otherDepts = h.topDepts.filter(d => d !== targetDept).slice(0, 2);
+                deptsToShow = [...deptsToShow, ...otherDepts];
+            } else {
+                // 如果没找到，显示前3个
+                deptsToShow = h.topDepts.slice(0, 3);
+            }
+        } else {
+            // 没有指定科室，显示前3个
+            deptsToShow = h.topDepts.slice(0, 3);
+        }
         
         card.innerHTML = `
             <div class="flex justify-between items-start">
@@ -97,7 +116,7 @@ function renderHospitals(list) {
             <div class="bg-slate-50/50 rounded-2xl p-4">
                 <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-3 block">优势专科排名</span>
                 <div class="space-y-3">
-                    ${h.topDepts.slice(0, 3).map(d => `
+                    ${deptsToShow.map(d => `
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-bold text-slate-700">${d.name}</span>
                             <span class="bg-amber-100 text-amber-700 text-[10px] px-3 py-1 rounded-full font-black italic">
@@ -379,7 +398,7 @@ function filterHospitalsByDept(deptName, symptom = '') {
     
     window.listTitle.innerText = `针对"${deptName}"的优势医院`;
     window.listSubtitle.innerText = `以下这些医院的${deptName}为优势科室，供您参考`;
-    renderHospitals(filtered.length > 0 ? filtered : hospitals);
+    renderHospitals(filtered.length > 0 ? filtered : hospitals, deptName);
 }
 
 // 降级方案：关键词匹配
@@ -477,6 +496,16 @@ function checkLoginStatus() {
     // 初始化页面
     renderHospitals(hospitals);
     checkLoginStatus();
+    
+    // 绑定查询按钮事件
+    const searchButton = document.getElementById('searchButton');
+    if (searchButton) {
+        searchButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleSearch();
+        });
+    }
     
     // 初始化图标
     if (typeof lucide !== 'undefined') {
