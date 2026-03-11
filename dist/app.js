@@ -1,3 +1,7 @@
+// 全局变量
+const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+
+// 全局变量
 // 应用逻辑 - 等待 DOM 加载完成
 function initApp() {
     console.log('开始初始化应用');
@@ -186,52 +190,58 @@ async function handleSearch() {
     
     try {
         // 直接 HTTP 调用云函数
-        console.log('开始调用云函数，症状:', val);
-        console.log('请求 URL:', 'https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1');
+        console.log('=== 开始调用云函数 ===');
+        console.log('症状:', val);
         console.log('User Agent:', navigator.userAgent);
         
-        // 检测是否在微信浏览器中
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        console.log('是否微信浏览器:', isWeChat);
+        // 检测是否在微信浏览器中        console.log('是否微信浏览器:', isWeChat);
+        
+        // 云函数 URL
+        const apiUrl = 'https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1';
+        console.log('请求 URL:', apiUrl);
+        
+        // 请求配置
+        const requestConfig = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                symptom: val
+            })
+        };
+        
+        console.log('请求配置:', requestConfig);
         
         // 微信浏览器兼容方案：不使用 AbortController
         let response;
         if (isWeChat) {
+            console.log('使用微信浏览器兼容模式');
             // 微信浏览器：简单的 fetch，不使用超时控制
-            response = await fetch('https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    symptom: val
-                })
-            });
+            response = await fetch(apiUrl, requestConfig);
         } else {
+            console.log('使用标准浏览器模式');
             // 普通浏览器：使用超时控制
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 20000);
             
-            response = await fetch('https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    symptom: val
-                }),
+            response = await fetch(apiUrl, {
+                ...requestConfig,
                 signal: controller.signal
             });
             
             clearTimeout(timeoutId);
         }
         
+        console.log('收到响应');
         console.log('HTTP 状态码:', response.status);
+        console.log('响应头:', response.headers);
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
+        console.log('开始解析 JSON');
         const result = await response.json();
         console.log('云函数返回:', result);
         
@@ -262,24 +272,204 @@ async function handleSearch() {
         }
         
     } catch (error) {
-        console.error('调用云函数失败:', error);
-        console.error('错误详情:', error.message, error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        
-        // 检测是否在微信浏览器中
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        
-        // 显示详细错误提示（帮助调试）
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
-        errorMsg += '错误信息：' + error.message + '\n\n';
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
         errorMsg += '为您展示相关医院推荐。';
-        
         window.aiResultText.innerText = errorMsg;
-        
-        // 降级到关键词匹配
         fallbackSearch(val);
-    }
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
+        console.error('=== 调用云函数失败 ===');
+        console.error('错误类型:', error.name);
+        console.error('错误信息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        errorMsg += '错误类型：' + error.name + '\n';
+        errorMsg += '错误信息：' + error.message + '\n';
+        errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
+        errorMsg += '为您展示相关医院推荐。';
+        window.aiResultText.innerText = errorMsg;
+        fallbackSearch(val);
 }
 
 // 提取科室列表
