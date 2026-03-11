@@ -1,3 +1,7 @@
+// 全局变量
+const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+
+// 全局变量
 // 应用逻辑 - 等待 DOM 加载完成
 function initApp() {
     console.log('开始初始化应用');
@@ -190,9 +194,7 @@ async function handleSearch() {
         console.log('症状:', val);
         console.log('User Agent:', navigator.userAgent);
         
-        // 检测是否在微信浏览器中
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        console.log('是否微信浏览器:', isWeChat);
+        // 检测是否在微信浏览器中        console.log('是否微信浏览器:', isWeChat);
         
         // 云函数 URL
         const apiUrl = 'https://hospital-search-7gnfne58d97018a9-1404181085.ap-shanghai.app.tcloudbase.com/aiTriage1';
@@ -274,9 +276,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -287,9 +287,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -300,9 +298,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -313,9 +309,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -326,9 +320,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -339,9 +331,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -352,9 +342,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -365,9 +353,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -378,9 +364,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -391,9 +375,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -404,9 +386,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -417,9 +397,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -430,9 +408,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -443,9 +419,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -456,9 +430,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -469,9 +441,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -482,9 +452,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
@@ -495,9 +463,7 @@ async function handleSearch() {
         console.error('错误类型:', error.name);
         console.error('错误信息:', error.message);
         console.error('错误堆栈:', error.stack);
-        window.aiBox.classList.remove('loading-pulse');
-        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
+        window.aiBox.classList.remove('loading-pulse');        let errorMsg = '⚠️ AI 分析暂时失败\n\n';
         errorMsg += '错误类型：' + error.name + '\n';
         errorMsg += '错误信息：' + error.message + '\n';
         errorMsg += '浏览器：' + (isWeChat ? '微信浏览器' : '普通浏览器') + '\n\n';
