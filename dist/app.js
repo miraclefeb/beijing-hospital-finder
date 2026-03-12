@@ -460,6 +460,11 @@ window.onload = () => {
     lucide.createIcons();
     
     // 回车搜索
+    window.searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    });
 };
 
 // 检查登录状态
@@ -493,24 +498,11 @@ function checkLoginStatus() {
     checkLoginStatus();
     
     // 绑定查询按钮事件
-    // 监听表单提交（兼容所有浏览器）
-    const searchForm = document.getElementById('searchForm');
-    if (searchForm) {
-        searchForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            console.log('表单提交');
+    const searchButton = document.getElementById('searchButton');
+    if (searchButton) {
+        searchButton.addEventListener('click', () => {
+            console.log('查询按钮被点击');
             handleSearch();
-        });
-    }
-    
-    // 回车键监听（备用）
-    if (window.searchInput) {
-        window.searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                console.log('回车键按下');
-                handleSearch();
-            }
         });
     }
     
