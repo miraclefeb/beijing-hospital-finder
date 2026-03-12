@@ -503,6 +503,17 @@ function checkLoginStatus() {
         });
     }
     
+    // 回车键监听（备用）
+    if (window.searchInput) {
+        window.searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                console.log('回车键按下');
+                handleSearch();
+            }
+        });
+    }
+    
     // 初始化图标
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
