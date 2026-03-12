@@ -58,6 +58,17 @@
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
     </style>
+    <style>
+        /* 移动端按钮优化 */
+        #searchButton {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+            min-height: 44px; /* iOS 推荐的最小点击区域 */
+        }
+    </style>
 </head>
 <body class="text-slate-800 pb-24">
     <!-- 顶部搜索区 -->
@@ -86,7 +97,7 @@
             <button 
                 id="searchButton"
                 type="button"
-                class="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-200"
+                class="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-200 touch-manipulation cursor-pointer"
             >
                 查询
             </button>
