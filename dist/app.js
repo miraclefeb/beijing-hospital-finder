@@ -498,10 +498,12 @@ function checkLoginStatus() {
     checkLoginStatus();
     
     // 绑定查询按钮事件
-    const searchButton = document.getElementById('searchButton');
-    if (searchButton) {
-        searchButton.addEventListener('click', () => {
-            console.log('查询按钮被点击');
+    // 监听表单提交（兼容所有浏览器）
+    const searchForm = document.getElementById('searchForm');
+    if (searchForm) {
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            console.log('表单提交');
             handleSearch();
         });
     }
