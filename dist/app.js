@@ -460,8 +460,10 @@ window.onload = () => {
     lucide.createIcons();
     
     // 回车搜索
-    window.searchInput.addEventListener('keypress', (e) => {
+    window.searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
+            e.preventDefault();
+            console.log('回车键被按下');
             handleSearch();
         }
     });
@@ -500,19 +502,10 @@ function checkLoginStatus() {
     // 绑定查询按钮事件
     const searchButton = document.getElementById('searchButton');
     if (searchButton) {
-        // 桌面端点击事件
-        searchButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        searchButton.addEventListener('click', () => {
+            console.log('查询按钮被点击');
             handleSearch();
         });
-        
-        // 移动端触摸事件
-        searchButton.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            handleSearch();
-        }, { passive: false });
     }
     
     // 初始化图标
