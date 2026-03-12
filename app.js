@@ -460,11 +460,6 @@ window.onload = () => {
     lucide.createIcons();
     
     // 回车搜索
-    window.searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            handleSearch();
-        }
-    });
 };
 
 // 检查登录状态
