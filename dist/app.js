@@ -460,10 +460,8 @@ window.onload = () => {
     lucide.createIcons();
     
     // 回车搜索
-    window.searchInput.addEventListener('keydown', (e) => {
+    window.searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault();
-            console.log('回车键被按下');
             handleSearch();
         }
     });
