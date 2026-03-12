@@ -28,7 +28,7 @@ const hospitals = [
             },
             {
                 "name": "神经内科",
-                "rank": 1
+                "rank": 7
             },
             {
                 "name": "皮肤科",
@@ -366,7 +366,7 @@ const hospitals = [
             },
             {
                 "name": "神经内科",
-                "rank": 2
+                "rank": 1
             },
             {
                 "name": "全科医学科",
