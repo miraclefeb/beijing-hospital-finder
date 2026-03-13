@@ -341,6 +341,9 @@ function switchDept(deptName, btn) {
     // 筛选并显示医院
     filterHospitalsByDept(deptName, window.searchInput.value);
 }
+    
+    // 暴露到全局供 HTML onclick 使用
+    window.switchDept = switchDept;
 
 // 根据科室筛选医院（智能匹配 - 简化版）
 function filterHospitalsByDept(deptName, symptom = '') {
@@ -400,6 +403,9 @@ function filterHospitalsByDept(deptName, symptom = '') {
     window.listSubtitle.innerText = `以下这些医院的${deptName}为优势科室，供您参考`;
     renderHospitals(filtered.length > 0 ? filtered : hospitals, deptName);
 }
+    
+    // 暴露到全局
+    window.filterHospitalsByDept = filterHospitalsByDept;
 
 // 降级方案：关键词匹配
 function fallbackSearch(val) {
