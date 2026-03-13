@@ -289,18 +289,35 @@ function extractDepartments(analysis, primaryDept) {
     // 提取首选科室
     const primaryMatch = analysis.match(/首选科室[：:]\s*([^\n]+)/);
     if (primaryMatch) {
-        const dept = primaryMatch[1].replace(/[✅🏥💡🔄•\s]/g, '').split(/[，,、]/)[0];
+        const dept = primaryMatch[1].replace(/[✅🏥💡🔄•\s]/g, '').split(/[：:（(，,、]/)[0];
         if (dept) depts.push(dept);
     }
     
-    // 提取备选科室
-    const secondaryMatch = analysis.match(/备选科室[：:]\s*([^\n]+)/);
-    if (secondaryMatch) {
-        const secondaryText = secondaryMatch[1];
-        const secondaryDepts = secondaryText.split(/[、，,]/).map(s => {
-            return s.trim().replace(/[•\s]/g, '').split(/[（(]/)[0];
-        }).filter(s => s && s.includes('科'));
-        depts.push(...secondaryDepts);
+    // 提取备选科室（支持多行）
+    const lines = analysis.split('\n');
+    let inSecondary = false;
+    
+    for (const line of lines) {
+        if (line.includes('备选科室')) {
+            inSecondary = true;
+            continue;
+        }
+        
+        if (inSecondary) {
+            // 如果遇到新的 emoji 标题，停止
+            if (line.match(/^[💡🏥🔄]/)) {
+                break;
+            }
+            
+            // 提取科室名
+            const cleaned = line.trim().replace(/^[•\s]+/, '');
+            if (cleaned) {
+                const dept = cleaned.split(/[：:（(]/)[0].trim();
+                if (dept && dept.includes('科') && !depts.includes(dept)) {
+                    depts.push(dept);
+                }
+            }
+        }
     }
     
     // 如果没提取到，使用主科室
