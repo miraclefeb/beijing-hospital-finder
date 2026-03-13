@@ -376,19 +376,36 @@ function filterHospitalsByDept(deptName, symptom = '') {
     
     console.log('🔍 科室筛选:', deptName, '→', coreKeyword);
     
-    // 第1层：有该科室的医院（按排名排序）
-    const withDept = hospitals.filter(h => 
+    // 第1层：有该科室的医院（按排名排序，中医科室降权）
+    const allWithDept = hospitals.filter(h => 
         h.topDepts.some(d => 
             d.name.includes(deptName) || 
             d.name.includes(coreKeyword)
         )
-    ).sort((a, b) => {
+    );
+    
+    // 分离中医科室和非中医科室
+    const nonTCM = allWithDept.filter(h => {
+        const dept = h.topDepts.find(d => d.name.includes(deptName) || d.name.includes(coreKeyword));
+        return !dept.name.includes('中医');
+    }).sort((a, b) => {
         const rA = a.topDepts.find(d => d.name.includes(deptName) || d.name.includes(coreKeyword))?.rank || 99;
         const rB = b.topDepts.find(d => d.name.includes(deptName) || d.name.includes(coreKeyword))?.rank || 99;
         return rA - rB;
     });
     
-    console.log('  第1层:', withDept.length, '家');
+    const tcm = allWithDept.filter(h => {
+        const dept = h.topDepts.find(d => d.name.includes(deptName) || d.name.includes(coreKeyword));
+        return dept.name.includes('中医');
+    }).sort((a, b) => {
+        const rA = a.topDepts.find(d => d.name.includes(deptName) || d.name.includes(coreKeyword))?.rank || 99;
+        const rB = b.topDepts.find(d => d.name.includes(deptName) || d.name.includes(coreKeyword))?.rank || 99;
+        return rA - rB;
+    });
+    
+    const withDept = [...nonTCM, ...tcm];
+    
+    console.log('  第1层:', withDept.length, '家 (西医:', nonTCM.length, '中医:', tcm.length, ')');
     
     // 第2层：关键词匹配但没有该科室的医院
     const withKeyword = hospitals.filter(h => 
